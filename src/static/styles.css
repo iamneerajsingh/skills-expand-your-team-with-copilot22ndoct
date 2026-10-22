@@ -73,6 +73,37 @@ header h2 {
   font-size: 1.2rem;
 }
 
+.view-toggle {
+  margin-top: 10px;
+  display: inline-flex;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 3px;
+  gap: 4px;
+}
+
+.view-toggle-button {
+  background: transparent;
+  border: none;
+  color: var(--primary-text);
+  border-radius: 16px;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+}
+
+.view-toggle-button.active {
+  background-color: rgba(255, 255, 255, 0.95);
+  color: var(--primary);
+}
+
+.view-toggle-button:hover {
+  background-color: rgba(255, 255, 255, 0.35);
+}
+
+.view-toggle-button.active:hover {
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
 main {
   display: flex;
   flex-wrap: wrap;
@@ -146,6 +177,103 @@ section h3 {
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 15px;
   width: 100%;
+}
+
+#activities-list.calendar-mode {
+  display: block;
+}
+
+.calendar-view {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow-x: auto;
+  background-color: var(--surface);
+}
+
+.calendar-header {
+  display: grid;
+  grid-template-columns: 80px repeat(7, minmax(140px, 1fr));
+  border-bottom: 1px solid var(--border);
+  background-color: var(--background);
+  min-width: 1060px;
+}
+
+.calendar-time-header,
+.calendar-day-header {
+  padding: 10px 8px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-align: center;
+  border-right: 1px solid var(--border);
+}
+
+.calendar-day-header:last-child {
+  border-right: none;
+}
+
+.calendar-body {
+  display: grid;
+  grid-template-columns: 80px repeat(7, minmax(140px, 1fr));
+  min-width: 1060px;
+  position: relative;
+}
+
+.calendar-time-column {
+  position: relative;
+  border-right: 1px solid var(--border);
+  background-color: var(--surface);
+}
+
+.calendar-time-label {
+  position: absolute;
+  width: 100%;
+  transform: translateY(-50%);
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 0 4px;
+}
+
+.calendar-day-column {
+  position: relative;
+  border-right: 1px solid var(--border);
+}
+
+.calendar-day-column:last-child {
+  border-right: none;
+}
+
+.calendar-day-grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(var(--border-light) 1px, transparent 1px);
+  background-size: 100% 72px;
+  pointer-events: none;
+}
+
+.calendar-event {
+  position: absolute;
+  background-color: #e8eaf6;
+  border-left: 3px solid var(--primary);
+  border-radius: 4px;
+  padding: 5px 6px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.calendar-event-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.calendar-event-meta {
+  font-size: 0.66rem;
+  color: var(--text-secondary);
 }
 
 .activity-card {
