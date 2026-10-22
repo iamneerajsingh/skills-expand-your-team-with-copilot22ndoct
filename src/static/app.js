@@ -472,6 +472,43 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function getActivityShareDetails(name, details) {
+    const url = new URL(window.location.href);
+    url.hash = "";
+
+    return {
+      text: `Check out ${name} at Mergington High School! ${details.description} Schedule: ${formatSchedule(details)}.`,
+      url: url.toString(),
+    };
+  }
+
+  async function shareActivity(name, details) {
+    const shareDetails = getActivityShareDetails(name, details);
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${name} | Mergington High School Activities`,
+          ...shareDetails,
+        });
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          showMessage("Unable to share this activity. Please try again.", "error");
+        }
+      }
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(
+        `${shareDetails.text}\n${shareDetails.url}`
+      );
+      showMessage("Activity details copied to your clipboard!", "success");
+    } catch (error) {
+      showMessage("Unable to copy activity details. Please try again.", "error");
+    }
+  }
+
   // Function to render a single activity card
   function renderActivityCard(name, details) {
     const activityCard = document.createElement("div");
@@ -498,6 +535,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Format the schedule using the new helper function
     const formattedSchedule = formatSchedule(details);
+    const shareDetails = getActivityShareDetails(name, details);
+    const encodedShareText = encodeURIComponent(
+      `${shareDetails.text}\n${shareDetails.url}`
+    );
+    const encodedShareUrl = encodeURIComponent(shareDetails.url);
 
     // Create activity tag
     const tagHtml = `
@@ -552,6 +594,31 @@ document.addEventListener("DOMContentLoaded", () => {
             .join("")}
         </ul>
       </div>
+      <div class="share-controls" aria-label="Share this activity">
+        <span class="share-label">Share:</span>
+        <button type="button" class="share-button">Share</button>
+        <a
+        class="social-share-link"
+        href="https://www.facebook.com/sharer/sharer.php?u=${encodedShareUrl}"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Share this activity on Facebook"
+        >Facebook</a>
+        <a
+        class="social-share-link"
+        href="https://twitter.com/intent/tweet?text=${encodedShareText}"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Share this activity on X"
+        >X</a>
+        <a
+        class="social-share-link"
+        href="https://wa.me/?text=${encodedShareText}"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Share this activity on WhatsApp"
+        >WhatsApp</a>
+      </div>
       <div class="activity-card-actions">
         ${
           currentUser
@@ -576,6 +643,10 @@ document.addEventListener("DOMContentLoaded", () => {
     deleteButtons.forEach((button) => {
       button.addEventListener("click", handleUnregister);
     });
+
+    activityCard
+      .querySelector(".share-button")
+      .addEventListener("click", () => shareActivity(name, details));
 
     // Add click handler for register button (only when authenticated)
     if (currentUser) {
